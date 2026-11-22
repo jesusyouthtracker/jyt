@@ -4,24 +4,677 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>JYT - Jesus Youth Tracker</title>
-  
   <link rel="icon" type="image/png" href="https://i.postimg.cc/yNCnrZ0V/image.png">
-  <link rel="apple-touch-icon" href="https://i.postimg.cc/yNCnrZ0V/image.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://i.postimg.cc/yNCnrZ0V/image.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="JYT">
-
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background-color: #0b0d13; }
-    iframe { width: 100%; height: 100%; border: none; display: block; }
+    :root {
+      --bg-dark: #0b0d13;
+      --bg-card: rgba(22, 26, 38, 0.92);
+      --gold: #d4af37;
+      --gold-light: #f3d576;
+      --crimson: #8b1e3f;
+      --text-main: #f4f4f6;
+      --text-muted: #9ca3af;
+      --border: rgba(212, 175, 55, 0.25);
+      --custom-bg-image: url('https://i.postimg.cc/J4JkYdx2/image.png'); 
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      background-image: linear-gradient(rgba(11, 13, 19, 0.85), rgba(11, 13, 19, 0.92)), var(--custom-bg-image);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    header {
+      background: rgba(15, 18, 28, 0.95);
+      border-bottom: 1px solid var(--border);
+      padding: 16px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+
+    .brand-title {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: 1.25rem;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px 4px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), #b58e22);
+      color: #0b0d13;
+      flex: 2;
+    }
+
+    .btn-reset {
+      background: rgba(139, 30, 63, 0.25);
+      border: 1px solid #8b1e3f;
+      color: #ff8fa3;
+      flex: 1;
+    }
+
+    .tabs {
+      display: flex;
+      overflow-x: auto;
+      gap: 8px;
+      padding: 12px 16px;
+      max-width: 600px;
+      margin: 0 auto;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: var(--gold);
+      color: #0b0d13;
+      font-weight: 600;
+      border-color: var(--gold);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 8px 16px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .person-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--gold-light);
+    }
+
+    .person-phone {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .person-notes {
+      font-size: 0.82rem;
+      color: #d1d5db;
+      background: rgba(0,0,0,0.25);
+      padding: 8px;
+      border-radius: 6px;
+      margin: 8px 0;
+      border-left: 2px solid var(--gold);
+    }
+
+    .status-select {
+      width: 100%;
+      background: #10141f;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto auto;
+      gap: 8px;
+    }
+
+    .action-call {
+      background: #1e3a8a;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .action-wa {
+      background: #15803d;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .action-icon {
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      padding: 8px 10px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-box {
+      background: #141824;
+      border: 1px solid var(--gold);
+      border-radius: 14px;
+      padding: 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+
+    .modal-title {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: 1.15rem;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .verse-text {
+      font-style: italic;
+      line-height: 1.6;
+      color: #e5e7eb;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .verse-ref {
+      text-align: center;
+      color: var(--gold-light);
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 18px;
+    }
+
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #0b0d13;
+      color: #fff;
+      font-family: inherit;
+    }
+
+    .loader {
+      text-align: center;
+      padding: 30px;
+      color: var(--gold);
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
-  <iframe 
-    src="https://script.google.com/macros/s/AKfycbzs_DI6aWt84QYNF_tG1kMYxjLXo1Tob_y0UHhT7TT6N3cnCUorkWN6dG61dlraMtkxWQ/exec" 
-    referrerpolicy="no-referrer"
-    allow="autoplay; clipboard-write">
-  </iframe>
+
+  <header>
+    <div class="brand-title">
+      <img src="https://i.postimg.cc/yNCnrZ0V/image.png" alt="JYT Logo" style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #d4af37; object-fit: cover;">
+      <span>Jesus Youth Tracker</span>
+    </div>
+    <div class="brand-sub">JYT • Gathering Follow-Up</div>
+  </header>
+
+  <div class="top-actions">
+    <button class="btn btn-gold" onclick="openFormModal()">+ Add Person</button>
+    <button class="btn" style="background: #15803d; color: #fff; flex: 1.5;" onclick="openPosterModal()">📢 Share Poster</button>
+    <button class="btn btn-reset" onclick="confirmReset()">↻ Reset</button>
+  </div>  
+
+  <div class="tabs" id="tabBar">
+    <div class="tab active" onclick="setTab('Follow Up Required', this)">Follow Up Required</div>
+    <div class="tab" onclick="setTab('Didn\'t Take the Call', this)">Didn't Take the Call</div>
+    <div class="tab" onclick="setTab('Make a Call Once More!', this)">Make a Call Once More!</div>
+    <div class="tab" onclick="setTab('Confirmed / Done', this)">Confirmed</div>
+    <div class="tab" onclick="setTab('ALL', this)">All</div>
+  </div>
+
+  <div class="container" id="contactList">
+    <div class="loader">Initializing JYT...</div>
+  </div>
+
+  <!-- Welcome Bible Verse Modal -->
+  <div class="modal-overlay" id="welcomeModal" style="display: flex;">
+    <div class="modal-box">
+      <div class="modal-title">✝ Pax Christi • JYT</div>
+      <p class="verse-text" id="verseText">Loading Scripture...</p>
+      <div class="verse-ref" id="verseRef"></div>
+      <button class="btn btn-gold" style="width: 100%;" onclick="document.getElementById('welcomeModal').style.display='none'">Begin Follow-Up</button>
+    </div>
+  </div>
+
+  <!-- Add / Edit Person Modal -->
+  <div class="modal-overlay" id="formModal">
+    <div class="modal-box">
+      <div class="modal-title" id="formModalTitle">Add Member</div>
+      <input type="hidden" id="editId">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="inputName" placeholder="e.g., John Paul">
+      </div>
+      <div class="form-group">
+        <label>Phone Number (Include country code for WhatsApp, e.g., +49... or +91...)</label>
+        <input type="tel" id="inputPhone" placeholder="+1234567890">
+      </div>
+      <div class="form-group">
+        <label>Follow-Up Status</label>
+        <select id="inputStatus">
+          <option value="Follow Up Required">Follow Up Required</option>
+          <option value="Didn't Take the Call">Didn't Take the Call</option>
+          <option value="Make a Call Once More!">Make a Call Once More!</option>
+          <option value="Confirmed / Done">Confirmed / Done</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Notes / Prayer Intentions</label>
+        <textarea id="inputNotes" rows="2" placeholder="Optional notes..."></textarea>
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 14px;">
+        <button class="btn action-icon" style="flex:1;" onclick="closeFormModal()">Cancel</button>
+        <button class="btn btn-gold" style="flex:2;" onclick="savePerson()">Save</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Share Poster Modal -->
+  <div class="modal-overlay" id="posterModal">
+    <div class="modal-box" style="max-height: 88vh; overflow-y: auto;">
+      <div class="modal-title">📢 Share Gathering Poster</div>
+      
+      <div class="form-group">
+        <label>1. Select Poster from Phone Gallery</label>
+        <input type="file" id="posterFile" accept="image/*" onchange="uploadSelectedPoster()" style="padding: 6px;">
+        <div id="uploadStatus" style="font-size: 0.78rem; color: var(--gold-light); margin-top: 6px;"></div>
+        <input type="hidden" id="uploadedPosterUrl">
+      </div>
+
+      <div class="form-group">
+        <label>2. Invitation Message</label>
+        <textarea id="posterCaption" rows="3">Praise the Lord! 🙏 You are warmly invited to our upcoming Jesus Youth gathering. Check out the poster for details!</textarea>
+      </div>
+
+      <button class="btn" style="background: #15803d; color: #fff; width: 100%; margin-bottom: 14px;" onclick="sharePosterWithLink()">
+        📲 Share Message + Poster Link to WhatsApp
+      </button>
+
+      <div style="border-top: 1px solid var(--border); padding-top: 12px; margin-top: 6px;">
+        <label style="font-size: 0.8rem; color: var(--gold-light); display: block; margin-bottom: 8px;">
+          Or send personalized invite + poster 1-by-1:
+        </label>
+        <div id="rapidSendList" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;"></div>
+      </div>
+
+      <button class="btn action-icon" style="width: 100%; margin-top: 14px;" onclick="closePosterModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    window.onerror = function(msg, url, line) {
+      var el = document.getElementById('contactList');
+      if (el) el.innerHTML = '<div class="loader" style="color:#ff8fa3;">JS Error (Line ' + line + '): ' + msg + '</div>';
+    };
+
+    var API_URL = "https://script.google.com/macros/s/AKfycbzs_DI6aWt84QYNF_tG1kMYxjLXo1Tob_y0UHhT7TT6N3cnCUorkWN6dG61dlraMtkxWQ/exec";
+
+    var VERSES = [
+      { text: "For where two or three are gathered together in my name, there am I in the midst of them.", ref: "Matthew 18:20" },
+      { text: "Let no one have contempt for your youth, but set an example for those who believe, in speech, conduct, love, faith, and purity.", ref: "1 Timothy 4:12" },
+      { text: "Be strong and steadfast; have no fear or dread of them, for it is the LORD, your God, who marches with you.", ref: "Deuteronomy 31:6" },
+      { text: "Whatever you do, do from the heart, as for the Lord and not for others.", ref: "Colossians 3:23" },
+      { text: "Go into the whole world and proclaim the gospel to every creature.", ref: "Mark 16:15" },
+      { text: "I can do all things in him who strengthens me.", ref: "Philippians 4:13" },
+      { text: "Do not grow slack in zeal, be fervent in spirit, serve the Lord.", ref: "Romans 12:11" }
+    ];
+
+    var allContacts = [];
+    var currentTab = 'Follow Up Required';
+
+    function initApp() {
+      var randomVerse = VERSES[Math.floor(Math.random() * VERSES.length)];
+      document.getElementById('verseText').innerText = randomVerse.text;
+      document.getElementById('verseRef').innerText = randomVerse.ref;
+      loadContacts();
+    }
+
+    function loadContacts() {
+      var container = document.getElementById('contactList');
+      container.innerHTML = '<div class="loader">Fetching contacts from Google Sheet...</div>';
+      fetch(API_URL + '?action=getContacts&t=' + Date.now(), { redirect: 'follow' })
+        .then(function(res) { return res.text(); })
+        .then(function(text) {
+          try {
+            var data = JSON.parse(text);
+            renderContacts(data);
+          } catch (e) {
+            container.innerHTML = '<div class="loader" style="color:#ff8fa3;">Response not JSON:<br><small>' + text.substring(0, 180) + '</small></div>';
+          }
+        })
+        .catch(function(err) {
+          container.innerHTML = '<div class="loader" style="color:#ff8fa3;">Fetch error: ' + err.message + '</div>';
+        });
+    }
+
+    function postAction(payload) {
+      return fetch(API_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.error) throw new Error(data.error);
+        return data;
+      });
+    }
+
+    function setTab(tabName, el) {
+      currentTab = tabName;
+      var tabs = document.querySelectorAll('.tab');
+      for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+      el.classList.add('active');
+      renderContacts(allContacts);
+    }
+
+    function formatWhatsAppNumber(phone) {
+      return String(phone || '').replace(/[^0-9]/g, '');
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function renderContacts(data) {
+      allContacts = Array.isArray(data) ? data : [];
+      var container = document.getElementById('contactList');
+      
+      var filtered = currentTab === 'ALL' 
+        ? allContacts 
+        : allContacts.filter(function(c) { return c.status === currentTab; });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="loader" style="color: var(--text-muted);">No one in "' + escapeHtml(currentTab) + '" right now.</div>';
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < filtered.length; i++) {
+        var person = filtered[i];
+        var waNum = formatWhatsAppNumber(person.phone);
+        var waMsg = encodeURIComponent('Praise the Lord ' + person.name + '! Checking in regarding our Jesus Youth gathering.');
+        
+        html += '<div class="card">' +
+          '<div class="card-header">' +
+            '<div>' +
+              '<div class="person-name">' + escapeHtml(person.name) + '</div>' +
+              '<div class="person-phone">' + escapeHtml(person.phone) + '</div>' +
+            '</div>' +
+            '<span style="font-size: 0.7rem; color: var(--text-muted);">' + escapeHtml(person.lastUpdated) + '</span>' +
+          '</div>' +
+          (person.notes ? '<div class="person-notes">' + escapeHtml(person.notes) + '</div>' : '') +
+          '<select class="status-select" onchange="quickStatusChange(\'' + person.id + '\', this.value)">' +
+            '<option value="Follow Up Required"' + (person.status === 'Follow Up Required' ? ' selected' : '') + '>📌 Follow Up Required</option>' +
+            '<option value="Didn\'t Take the Call"' + (person.status === "Didn't Take the Call" ? ' selected' : '') + '>📵 Didn\'t Take the Call</option>' +
+            '<option value="Make a Call Once More!"' + (person.status === 'Make a Call Once More!' ? ' selected' : '') + '>🔁 Make a Call Once More!</option>' +
+            '<option value="Confirmed / Done"' + (person.status === 'Confirmed / Done' ? ' selected' : '') + '>✅ Confirmed / Done</option>' +
+          '</select>' +
+          '<div class="card-actions">' +
+            '<a href="tel:' + escapeHtml(person.phone) + '" class="btn action-call">📞 Call</a>' +
+            '<a href="https://wa.me/' + waNum + '?text=' + waMsg + '" target="_blank" class="btn action-wa">💬 WhatsApp</a>' +
+            '<button class="btn action-icon" onclick="openEditById(\'' + person.id + '\')" title="Edit">✏️</button>' +
+            '<button class="btn action-icon" onclick="removePersonById(\'' + person.id + '\')" title="Remove">🗑️</button>' +
+          '</div>' +
+        '</div>';
+      }
+      container.innerHTML = html;
+    }
+
+    function quickStatusChange(id, newStatus) {
+      var person = allContacts.find(function(c) { return c.id === id; });
+      if (!person) return;
+      person.status = newStatus;
+      renderContacts(allContacts);
+      postAction({ action: 'updateContact', data: person })
+        .then(renderContacts)
+        .catch(function(e) { alert('Error updating status: ' + e.message); });
+    }
+
+    function openFormModal() {
+      document.getElementById('formModalTitle').innerText = 'Add Member';
+      document.getElementById('editId').value = '';
+      document.getElementById('inputName').value = '';
+      document.getElementById('inputPhone').value = '';
+      document.getElementById('inputStatus').value = 'Follow Up Required';
+      document.getElementById('inputNotes').value = '';
+      document.getElementById('formModal').style.display = 'flex';
+    }
+
+    function openEditById(id) {
+      var person = allContacts.find(function(c) { return c.id === id; });
+      if (!person) return;
+      document.getElementById('formModalTitle').innerText = 'Edit Member';
+      document.getElementById('editId').value = person.id;
+      document.getElementById('inputName').value = person.name;
+      document.getElementById('inputPhone').value = person.phone;
+      document.getElementById('inputStatus').value = person.status;
+      document.getElementById('inputNotes').value = person.notes;
+      document.getElementById('formModal').style.display = 'flex';
+    }
+
+    function closeFormModal() {
+      document.getElementById('formModal').style.display = 'none';
+    }
+
+    function savePerson() {
+      var id = document.getElementById('editId').value;
+      var name = document.getElementById('inputName').value.trim();
+      var phone = document.getElementById('inputPhone').value.trim();
+      var status = document.getElementById('inputStatus').value;
+      var notes = document.getElementById('inputNotes').value.trim();
+
+      if (!name || !phone) {
+        alert('Please enter both a Name and Phone Number.');
+        return;
+      }
+
+      closeFormModal();
+      document.getElementById('contactList').innerHTML = '<div class="loader">Saving...</div>';
+
+      var payload = id 
+        ? { action: 'updateContact', data: { id: id, name: name, phone: phone, status: status, notes: notes } }
+        : { action: 'addContact', data: { name: name, phone: phone, status: status, notes: notes } };
+
+      postAction(payload)
+        .then(renderContacts)
+        .catch(function(e) {
+          alert('Save failed: ' + e.message);
+          loadContacts();
+        });
+    }
+
+    function removePersonById(id) {
+      var person = allContacts.find(function(c) { return c.id === id; });
+      var name = person ? person.name : 'this member';
+      if (confirm('Remove ' + name + ' from JYT?')) {
+        document.getElementById('contactList').innerHTML = '<div class="loader">Removing...</div>';
+        postAction({ action: 'deleteContact', id: id })
+          .then(renderContacts)
+          .catch(function(e) {
+            alert('Remove failed: ' + e.message);
+            loadContacts();
+          });
+      }
+    }
+
+    function confirmReset() {
+      if (confirm('Reset ALL people back to "Follow Up Required" for the next meeting?')) {
+        document.getElementById('contactList').innerHTML = '<div class="loader">Resetting statuses for next gathering...</div>';
+        postAction({ action: 'resetAllStatuses' })
+          .then(renderContacts)
+          .catch(function(e) {
+            alert('Reset failed: ' + e.message);
+            loadContacts();
+          });
+      }
+    }
+
+    function openPosterModal() {
+      document.getElementById('posterModal').style.display = 'flex';
+      renderRapidSendList();
+    }
+
+    function closePosterModal() {
+      document.getElementById('posterModal').style.display = 'none';
+    }
+
+    function uploadSelectedPoster() {
+      var fileInput = document.getElementById('posterFile');
+      var statusEl = document.getElementById('uploadStatus');
+      if (!fileInput.files || fileInput.files.length === 0) return;
+
+      var file = fileInput.files[0];
+      statusEl.innerText = '⏳ Uploading poster to Drive...';
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        postAction({
+          action: 'uploadPosterToDrive',
+          base64Data: e.target.result,
+          fileName: file.name,
+          mimeType: file.type
+        })
+        .then(function(res) {
+          document.getElementById('uploadedPosterUrl').value = res.url;
+          statusEl.innerText = '✅ Poster uploaded & ready to send!';
+        })
+        .catch(function(err) {
+          statusEl.innerText = '❌ Upload failed: ' + err.message;
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function sharePosterWithLink() {
+      var caption = document.getElementById('posterCaption').value.trim();
+      var posterUrl = document.getElementById('uploadedPosterUrl').value;
+
+      if (!posterUrl) {
+        alert('Please select a poster image and wait for the "✅ Poster uploaded" confirmation first!');
+        return;
+      }
+
+      var fullMessage = encodeURIComponent(caption + '\n\n🖼️ View Gathering Poster:\n' + posterUrl);
+      window.open('https://wa.me/?text=' + fullMessage, '_blank');
+    }
+
+    function renderRapidSendList() {
+      var listEl = document.getElementById('rapidSendList');
+      if (!allContacts || allContacts.length === 0) {
+        listEl.innerHTML = '<div style="font-size: 0.8rem; color: var(--text-muted);">No contacts found.</div>';
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < allContacts.length; i++) {
+        var person = allContacts[i];
+        html += '<div style="display: flex; justify-content: space-between; align-items: center; background: #0b0d13; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);">' +
+          '<span style="font-size: 0.85rem;">' + escapeHtml(person.name) + '</span>' +
+          '<button onclick="sendInviteById(\'' + person.id + '\', this)" style="background: #15803d; color: #fff; border: none; padding: 5px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">Send ➔</button>' +
+        '</div>';
+      }
+      listEl.innerHTML = html;
+    }
+
+    function sendInviteById(id, btnEl) {
+      var person = allContacts.find(function(c) { return c.id === id; });
+      if (!person) return;
+      var waNum = formatWhatsAppNumber(person.phone);
+      var baseCaption = document.getElementById('posterCaption').value.trim();
+      var posterUrl = document.getElementById('uploadedPosterUrl').value;
+      
+      var msg = 'Praise the Lord ' + person.name + '! 🙏\n\n' + baseCaption;
+      if (posterUrl) {
+        msg += '\n\n🖼️ View Gathering Poster:\n' + posterUrl;
+      }
+
+      btnEl.style.background = '#374151';
+      btnEl.innerText = '✓ Opened';
+      window.open('https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    initApp();
+  </script>
 </body>
 </html>
