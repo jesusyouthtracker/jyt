@@ -275,17 +275,6 @@
       color: var(--gold);
       font-size: 0.9rem;
     }
-
-    #posterPreview {
-      display: none;
-      width: 100%;
-      max-height: 180px;
-      object-fit: contain;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      margin-top: 8px;
-      background: #0b0d13;
-    }
   </style>
 </head>
 <body>
@@ -300,7 +289,6 @@
 
   <div class="top-actions">
     <button class="btn btn-gold" onclick="openFormModal()">+ Add Person</button>
-    <button class="btn" style="background: #15803d; color: #fff; flex: 1.5;" onclick="openPosterModal()">📢 Share Poster</button>
     <button class="btn btn-reset" onclick="confirmReset()">↻ Reset</button>
   </div>  
 
@@ -356,38 +344,6 @@
         <button class="btn action-icon" style="flex:1;" onclick="closeFormModal()">Cancel</button>
         <button class="btn btn-gold" style="flex:2;" onclick="savePerson()">Save</button>
       </div>
-    </div>
-  </div>
-  
-  <!-- Share Poster Modal -->
-  <div class="modal-overlay" id="posterModal">
-    <div class="modal-box" style="max-height: 88vh; overflow-y: auto;">
-      <div class="modal-title">📢 Share Gathering Poster</div>
-      
-      <div class="form-group">
-        <label>1. Select Poster (.PNG or .JPG) from Phone Gallery</label>
-        <input type="file" id="posterFile" accept="image/png, image/jpeg, image/webp" onchange="previewSelectedPoster()" style="padding: 6px;">
-        <img id="posterPreview" alt="Poster Preview">
-        <div id="uploadStatus" style="font-size: 0.78rem; color: var(--gold-light); margin-top: 6px;"></div>
-      </div>
-
-      <div class="form-group">
-        <label>2. Invitation Message</label>
-        <textarea id="posterCaption" rows="3">Praise the Lord! 🙏 You are warmly invited to our upcoming Jesus Youth gathering. See attached poster for details!</textarea>
-      </div>
-
-      <button class="btn" style="background: #15803d; color: #fff; width: 100%; margin-bottom: 14px;" onclick="shareNativeImageFile()">
-        🖼️ Share Actual Poster Image to WhatsApp
-      </button>
-
-      <div style="border-top: 1px solid var(--border); padding-top: 12px; margin-top: 6px;">
-        <label style="font-size: 0.8rem; color: var(--gold-light); display: block; margin-bottom: 6px;">
-          Or open individual WhatsApp chat (copies caption automatically):
-        </label>
-        <div id="rapidSendList" style="max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;"></div>
-      </div>
-
-      <button class="btn action-icon" style="width: 100%; margin-top: 14px;" onclick="closePosterModal()">Close</button>
     </div>
   </div>
 
@@ -599,88 +555,6 @@
             loadContacts();
           });
       }
-    }
-
-    function openPosterModal() {
-      document.getElementById('posterModal').style.display = 'flex';
-      renderRapidSendList();
-    }
-
-    function closePosterModal() {
-      document.getElementById('posterModal').style.display = 'none';
-    }
-
-    function previewSelectedPoster() {
-      var fileInput = document.getElementById('posterFile');
-      var statusEl = document.getElementById('uploadStatus');
-      var previewEl = document.getElementById('posterPreview');
-      if (!fileInput.files || fileInput.files.length === 0) return;
-
-      var file = fileInput.files[0];
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        previewEl.src = e.target.result;
-        previewEl.style.display = 'block';
-        statusEl.innerText = '✅ Poster ready (' + file.name + '). Tap green button below to send!';
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function shareNativeImageFile() {
-      var fileInput = document.getElementById('posterFile');
-      var caption = document.getElementById('posterCaption').value.trim();
-
-      if (!fileInput.files || fileInput.files.length === 0) {
-        alert('Please select a .png or .jpg poster image first!');
-        return;
-      }
-
-      var file = fileInput.files[0];
-      var shareData = {
-        files: [file],
-        title: 'Jesus Youth Gathering Poster',
-        text: caption
-      };
-
-      if (navigator.canShare && navigator.canShare(shareData)) {
-        navigator.share(shareData).catch(function(err) {
-          if (err.name !== 'AbortError') {
-            alert('Could not share image: ' + err.message);
-          }
-        });
-      } else {
-        alert('Your current browser does not support direct image file sharing. Open this page in Chrome or Safari on your phone to share the image file directly.');
-      }
-    }
-
-    function renderRapidSendList() {
-      var listEl = document.getElementById('rapidSendList');
-      if (!allContacts || allContacts.length === 0) {
-        listEl.innerHTML = '<div style="font-size: 0.8rem; color: var(--text-muted);">No contacts found.</div>';
-        return;
-      }
-
-      var html = '';
-      for (var i = 0; i < allContacts.length; i++) {
-        var person = allContacts[i];
-        html += '<div style="display: flex; justify-content: space-between; align-items: center; background: #0b0d13; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);">' +
-          '<span style="font-size: 0.85rem;">' + escapeHtml(person.name) + '</span>' +
-          '<button onclick="sendInviteById(\'' + person.id + '\', this)" style="background: #15803d; color: #fff; border: none; padding: 5px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">Open Chat ➔</button>' +
-        '</div>';
-      }
-      listEl.innerHTML = html;
-    }
-
-    function sendInviteById(id, btnEl) {
-      var person = allContacts.find(function(c) { return c.id === id; });
-      if (!person) return;
-      var waNum = formatWhatsAppNumber(person.phone);
-      var baseCaption = document.getElementById('posterCaption').value.trim();
-      var msg = 'Praise the Lord ' + person.name + '! 🙏\n\n' + baseCaption;
-
-      btnEl.style.background = '#374151';
-      btnEl.innerText = '✓ Opened';
-      window.open('https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg), '_blank');
     }
 
     initApp();
